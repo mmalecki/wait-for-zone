@@ -1,0 +1,13 @@
+{
+  "name": "wait-for-zone",
+  "version": "0.0.0",
+  "author": "Maciej Małecki <me@mmalecki.com>",
+  "keywords": [
+    "smartos",
+    "zone"
+  ],
+  "description": "Wait for a SmartOS zone to become fully available",
+  "dependencies": {
+    "concat-stream": "^1.4.5"
+  }
+}
