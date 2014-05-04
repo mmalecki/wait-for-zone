@@ -36,7 +36,7 @@ module.exports = function(uuid, callback) {
       ( path.join('/zones', uuid, 'root', 'tmp', '.FIRST_REBOOT_NOT_COMPLETE_YET')
       , function(err, stat) {
           if (err && err.code !== 'ENOENT') return checkDone(err)
-          checkDone(null, err.code !== 'ENOENT')
+          checkDone(null, err && err.code === 'ENOENT')
         }
       )
 
