@@ -8,13 +8,18 @@ var fs = require('fs')
 var CHECK_INTERVAL = 1000
 
 module.exports = function(uuid, callback) {
-  setInterval(function() {
+  var interval = setInterval(function() {
     var succeeded = 0
 
+    function done(err, uuid) {
+      clearInterval(interval)
+      callback(err, uuid)
+    }
+
     function checkDone(err, result) {
-      if (err) return callback(err)
+      if (err) return done(err)
       if (result) ++succeeded
-      if (succeeded === 2) return callback(null, uuid)
+      if (succeeded === 2) return done(null, uuid)
     }
 
     var child = spawn('vmadm', ['get', uuid])
@@ -35,8 +40,11 @@ module.exports = function(uuid, callback) {
     fs.stat
       ( path.join('/zones', uuid, 'root', 'tmp', '.FIRST_REBOOT_NOT_COMPLETE_YET')
       , function(err, stat) {
-          if (err && err.code !== 'ENOENT') return checkDone(err)
-          checkDone(null, err && err.code === 'ENOENT')
+          if (err) {
+            if (err.code === 'ENOENT') return checkDone(null, true)
+            callback(err)
+          }
+          callback(null, false)
         }
       )
 
